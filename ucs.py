@@ -1,4 +1,3 @@
-
 import heapq
 import time
 from itertools import count
@@ -14,8 +13,9 @@ def ucs(grid, start, goal):
     while avoiding obstacles.
     """
 
-    # Check that start and goal are valid positions
+    # Check if a position is walkable
     def is_walkable(position):
+
         row, col = position
 
         if row < 0 or row >= len(grid):
@@ -24,70 +24,102 @@ def ucs(grid, start, goal):
         if col < 0 or col >= len(grid[row]):
             return False
 
-        return grid[row][col] != -1
+        return grid[row][col] in (0, 3)
 
-    # Get the movement cost of a cell
+    # Get movement cost
     def get_move_cost(position):
+
         row, col = position
         cell = grid[row][col]
 
         if cell == 0:
             return 1
+
         elif cell == 3:
             return 3
-        else:
-            return None
 
-      # Standard result when no route is found
-    def no_route_result(execution_time=0, expanded_nodes=0):
+        return None
+
+    # Standard result when no route is found
+    def no_route_result(execution_time=0.0, expanded_nodes=0):
+
         return {
             "algorithm": "UCS",
             "path": [],
-            "cost": 0,
+            "cost": None,
             "steps": 0,
             "expanded_nodes": expanded_nodes,
             "execution_time": execution_time,
             "found": False
         }
 
-    # Validate the input
-    if not grid or not isinstance(start, tuple) or not isinstance(goal, tuple):
+    # Validate input
+    if (
+        not isinstance(grid, list)
+        or not grid
+        or not isinstance(start, tuple)
+        or not isinstance(goal, tuple)
+        or len(start) != 2
+        or len(goal) != 2
+    ):
         return no_route_result()
 
-    if len(start) != 2 or len(goal) != 2:
+    # Validate grid structure
+    if (
+        not grid[0]
+        or any(len(row) != len(grid[0]) for row in grid)
+    ):
         return no_route_result()
 
+    # Validate start and goal
     if not is_walkable(start) or not is_walkable(goal):
         return no_route_result()
 
-    # Initialize the priority queue
+    # Start measuring execution time
+    start_time = time.perf_counter()
+
+    # Start and goal are the same
+    if start == goal:
+
+        return {
+            "algorithm": "UCS",
+            "path": [start],
+            "cost": 0,
+            "steps": 0,
+            "expanded_nodes": 0,
+            "execution_time": time.perf_counter() - start_time,
+            "found": True
+        }
+
+    # Initialize priority queue
     counter = count()
-    priority_queue = [(0, next(counter), start)]
+
+    priority_queue = [
+        (0, next(counter), start)
+    ]
 
     # Store the lowest cost to reach each position
     cost_so_far = {start: 0}
 
-    # Store parent positions for path reconstruction
+    # Store parent positions
     parent = {}
 
-    # Count expanded nodes
     expanded_nodes = 0
-
-    # Start measuring search execution time
-    start_time = time.perf_counter()
 
     found = False
 
-    # UCS main search loop
+    # UCS Main Search Loop
     while priority_queue:
 
-        current_cost, _, current = heapq.heappop(priority_queue)
+        current_cost, _, current = heapq.heappop(
+            priority_queue
+        )
 
         # Ignore outdated entries
         if current_cost != cost_so_far.get(current):
             continue
 
-        # Stop when the goal is reached
+        # Check if goal is reached
         if current == goal:
             found = True
             break
@@ -96,7 +128,7 @@ def ucs(grid, start, goal):
 
         row, col = current
 
-        # Four possible movement directions
+        # Four movement directions
         neighbors = [
             (row - 1, col),  # Up
             (row + 1, col),  # Down
@@ -104,7 +136,7 @@ def ucs(grid, start, goal):
             (row, col + 1)   # Right
         ]
 
-        # Explore neighboring positions
+        # Explore neighbors
         for neighbor in neighbors:
 
             if not is_walkable(neighbor):
@@ -115,31 +147,47 @@ def ucs(grid, start, goal):
             new_cost = current_cost + move_cost
 
             # Update if a better path is found
-            if new_cost < cost_so_far.get(neighbor, float("inf")):
+            if new_cost < cost_so_far.get(
+                neighbor, float("inf")
+            ):
 
                 cost_so_far[neighbor] = new_cost
+
                 parent[neighbor] = current
 
                 heapq.heappush(
                     priority_queue,
-                    (new_cost, next(counter), neighbor)
+                    (
+                        new_cost,
+                        next(counter),
+                        neighbor
+                    )
                 )
 
-    # Finish measuring search time
+    # Calculate execution time
     execution_time = time.perf_counter() - start_time
 
     # Return failure if no route exists
     if not found:
-        return no_route_result(execution_time, expanded_nodes)
 
-    # Reconstruct the path using Malak's function
+        return no_route_result(
+            execution_time,
+            expanded_nodes
+        )
+
+    # Reconstruct path
     path = reconstruct_path(parent, start, goal)
 
     if not path:
-        return no_route_result(execution_time, expanded_nodes)
 
-    # Calculate final performance metrics
+        return no_route_result(
+            execution_time,
+            expanded_nodes
+        )
+
+    # Calculate performance metrics
     total_cost = cost_so_far[goal]
+
     number_of_steps = len(path) - 1
 
     return {
