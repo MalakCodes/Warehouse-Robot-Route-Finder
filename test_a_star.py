@@ -1,3 +1,5 @@
+from warehouse_grid import create_warehouse_grid, START, GOAL
+from ucs import ucs
 from a_star import a_star
 
 grid = [
@@ -55,3 +57,25 @@ result = a_star(blocked_grid, start, goal)
 
 for key, value in result.items():
     print(f"{key}: {value}")
+
+print("\nA* vs UCS Comparison")
+print("--------------------")
+
+grid = create_warehouse_grid()
+
+astar_result = a_star(grid, START, GOAL)
+ucs_result = ucs(grid, START, GOAL)
+
+print("A* Cost:", astar_result["cost"])
+print("UCS Cost:", ucs_result["cost"])
+
+print(
+    "Same Minimum Cost:",
+    astar_result["cost"] == ucs_result["cost"]
+)
+
+print("A* Expanded Nodes:", astar_result["expanded_nodes"])
+print("UCS Expanded Nodes:", ucs_result["expanded_nodes"])
+
+print("A* Execution Time:", astar_result["execution_time"])
+print("UCS Execution Time:", ucs_result["execution_time"])
