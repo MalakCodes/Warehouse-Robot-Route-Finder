@@ -16,7 +16,7 @@ def get_movement_cost(cell):
     """
     Return the movement cost of a cell.
     """
-    if cell == "H":
+    if cell == 3:
         return 3
 
     return 1
@@ -33,8 +33,8 @@ def a_star(grid, start, goal):
         or cols == 0
         or not (0 <= start[0] < rows and 0 <= start[1] < cols)
         or not (0 <= goal[0] < rows and 0 <= goal[1] < cols)
-        or grid[start[0]][start[1]] == "X"
-        or grid[goal[0]][goal[1]] == "X"
+        or grid[start[0]][start[1]] == -1
+       or grid[goal[0]][goal[1]] == -1
     ):
 
         return {
@@ -129,7 +129,7 @@ def a_star(grid, start, goal):
                 continue
 
             # Avoid obstacles
-            if grid[new_row][new_col] == "X":
+            if grid[new_row][new_col] == -1:
 
                 continue
 
