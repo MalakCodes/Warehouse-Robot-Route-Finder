@@ -23,33 +23,47 @@ def get_movement_cost(cell):
 
 
 def a_star(grid, start, goal):
-    start_time = time.perf_counter()
-    rows = len(grid)
-    cols = len(grid[0]) if rows > 0 else 0
 
     # Validate grid and coordinates
-    if (
-        rows == 0
-        or cols == 0
-        or not (0 <= start[0] < rows and 0 <= start[1] < cols)
-        or not (0 <= goal[0] < rows and 0 <= goal[1] < cols)
-        or grid[start[0]][start[1]] == -1
-       or grid[goal[0]][goal[1]] == -1
-    ):
-
+    if not grid or not isinstance(start, tuple) or not isinstance(goal, tuple):
         return {
             "algorithm": "A*",
             "path": [],
             "cost": None,
             "steps": 0,
             "expanded_nodes": 0,
-            "execution_time": time.perf_counter() - start_time,
+            "execution_time": 0.0,
             "found": False
         }
 
+    rows = len(grid)
+    cols = len(grid[0]) if rows > 0 else 0
+
+    if (
+        len(start) != 2
+        or len(goal) != 2
+        or cols == 0
+        or any(len(row) != cols for row in grid)
+        or not (0 <= start[0] < rows and 0 <= start[1] < cols)
+        or not (0 <= goal[0] < rows and 0 <= goal[1] < cols)
+        or grid[start[0]][start[1]] not in (0, 3)
+        or grid[goal[0]][goal[1]] not in (0, 3)
+    ):
+        return {
+            "algorithm": "A*",
+            "path": [],
+            "cost": None,
+            "steps": 0,
+            "expanded_nodes": 0,
+            "execution_time": 0.0,
+            "found": False
+        }
+
+    # Start measuring execution time
+    start_time = time.perf_counter()
+
     # Start and goal are the same
     if start == goal:
-
         return {
             "algorithm": "A*",
             "path": [start],
@@ -88,23 +102,21 @@ def a_star(grid, start, goal):
     ]
 
     expanded_nodes = 0
-
     found = False
 
+    # A* Main Search Loop
     while priority_queue:
 
         current_f, _, current_g, current = heapq.heappop(
             priority_queue
         )
 
-        # Ignore outdated priority queue entries
+        # Ignore outdated entries
         if current_g != g_score.get(current):
-
             continue
 
-        # Check if the goal is reached
+        # Check if goal is reached
         if current == goal:
-
             found = True
             break
 
@@ -125,12 +137,10 @@ def a_star(grid, start, goal):
                 0 <= new_row < rows
                 and 0 <= new_col < cols
             ):
-
                 continue
 
             # Avoid obstacles
             if grid[new_row][new_col] == -1:
-
                 continue
 
             # Calculate movement cost
@@ -141,7 +151,7 @@ def a_star(grid, start, goal):
             # Calculate new actual cost
             tentative_g = current_g + movement_cost
 
-            # Update only if a better path is found
+            # Update if a better path is found
             if tentative_g < g_score.get(
                 neighbor, float("inf")
             ):
@@ -171,18 +181,21 @@ def a_star(grid, start, goal):
 
         path = reconstruct_path(parent, start, goal)
 
-        total_cost = g_score[goal]
+        if not path:
+            found = False
 
+    if found:
+
+        total_cost = g_score[goal]
         steps = len(path) - 1
 
     else:
 
         path = []
-
         total_cost = None
-
         steps = 0
 
+    # Calculate execution time
     execution_time = time.perf_counter() - start_time
 
     return {
