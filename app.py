@@ -1,6 +1,12 @@
 
 import streamlit as st
 
+import pandas as pd
+
+from bfs import bfs
+from ucs import ucs
+from a_star import a_star
+
 from warehouse_grid import create_warehouse_grid, get_warehouse_locations
 import main
 
@@ -182,3 +188,73 @@ else:
     display_warehouse(
         grid, start, goal, locations
     )
+
+# ---------------------------------------
+# Algorithm Performance Visualization
+# ---------------------------------------
+
+if find_route:
+
+    st.divider()
+    st.subheader("📊 Algorithm Performance Comparison")
+
+    # Run all algorithms on the same grid
+    algorithms = [bfs, ucs, a_star]
+    results = []
+
+    for algorithm in algorithms:
+        result = algorithm(grid, start, goal)
+
+        results.append({
+            "Algorithm": result["algorithm"],
+            "Route Found": result["found"],
+            "Total Cost": result["cost"],
+            "Steps": result["steps"],
+            "Expanded Nodes": result["expanded_nodes"],
+            "Execution Time (ms)": result["execution_time"] * 1000
+        })
+
+    df = pd.DataFrame(results)
+
+    # Display comparison table
+    st.write("### Performance Metrics")
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+   
+    # Performance Visualization
+    successful = df[df["Route Found"] == True]
+
+    st.write("### Performance Visualization")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.write("**Total Cost**")
+        if not successful.empty:
+            st.bar_chart(
+                successful.set_index("Algorithm")["Total Cost"],
+                height=280
+            )
+        else:
+            st.info("No valid route.")
+
+    with col2:
+        st.write("**Expanded Nodes**")
+        st.bar_chart(
+            df.set_index("Algorithm")["Expanded Nodes"],
+            height=280
+        )
+
+    with col3:
+        st.write("**Execution Time (ms)**")
+        st.bar_chart(
+            df.set_index("Algorithm")["Execution Time (ms)"],
+            height=280
+        )
+
+
+    st.caption(
+        "All algorithms were evaluated using the same "
+        "warehouse grid, start position, and target."
+    )
+
