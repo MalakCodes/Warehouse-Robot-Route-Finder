@@ -12,6 +12,7 @@ def ucs(grid, start, goal):
     Finds the lowest-cost path from start to goal
     while avoiding obstacles.
     """
+    start_time = time.perf_counter()
 
     # Check if a position is walkable
     def is_walkable(position):
@@ -46,7 +47,7 @@ def ucs(grid, start, goal):
         return {
             "algorithm": "UCS",
             "path": [],
-            "cost": None,
+            "cost": 0,
             "steps": 0,
             "expanded_nodes": expanded_nodes,
             "execution_time": execution_time,
@@ -75,9 +76,7 @@ def ucs(grid, start, goal):
     if not is_walkable(start) or not is_walkable(goal):
         return no_route_result()
 
-    # Start measuring execution time
-    start_time = time.perf_counter()
-
+  
     # Start and goal are the same
     if start == goal:
 

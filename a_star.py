@@ -23,13 +23,14 @@ def get_movement_cost(cell):
 
 
 def a_star(grid, start, goal):
+    start_time = time.perf_counter()
 
     # Validate grid and coordinates
     if not grid or not isinstance(start, tuple) or not isinstance(goal, tuple):
         return {
             "algorithm": "A*",
             "path": [],
-            "cost": None,
+            "cost": 0,
             "steps": 0,
             "expanded_nodes": 0,
             "execution_time": 0.0,
@@ -52,16 +53,14 @@ def a_star(grid, start, goal):
         return {
             "algorithm": "A*",
             "path": [],
-            "cost": None,
+            "cost": 0,
             "steps": 0,
             "expanded_nodes": 0,
             "execution_time": 0.0,
             "found": False
         }
 
-    # Start measuring execution time
-    start_time = time.perf_counter()
-
+   
     # Start and goal are the same
     if start == goal:
         return {
@@ -192,7 +191,7 @@ def a_star(grid, start, goal):
     else:
 
         path = []
-        total_cost = None
+        total_cost = 0
         steps = 0
 
     # Calculate execution time

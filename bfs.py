@@ -1,6 +1,7 @@
 
 from collections import deque
 import time
+from path_reconstruction import reconstruct_path
 
 def bfs(grid, start, goal):
     """
@@ -111,4 +112,3 @@ def bfs(grid, start, goal):
     }
 
 
-from path_reconstruction import reconstruct_path
