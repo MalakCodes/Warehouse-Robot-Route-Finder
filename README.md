@@ -119,7 +119,12 @@ The system displays the following metrics after executing a search algorithm:
 - **Execution Time:** Time taken by the algorithm to find the route.
 
 ## Project Team
-(Add team members' names here.)
+Malak Alotaibi
+Reem Alharthi
+Layal Albahsani
+Retaj Alansari
+Nouf Alotaibi
+Noura Alsalomi
 
 ## Future Improvements
 - Conduct detailed performance comparisons under different obstacle configurations.
