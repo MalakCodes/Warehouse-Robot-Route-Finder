@@ -1,6 +1,6 @@
 def create_warehouse_grid():
     """
-    Create the warehouse grid.
+    Create the 10x10 warehouse grid.
 
     Cell values:
     0  = Ordinary cell
@@ -9,16 +9,16 @@ def create_warehouse_grid():
     """
 
     grid = [
-        [0,  0,  0, -1,  0,  0,  0, -1,  0,  0],
-        [0, -1,  3, -1,  0, -1,  0, -1,  3,  0],
-        [0, -1,  0,  0,  0, -1,  0,  0,  0,  0],
-        [0,  0,  0, -1, -1, -1,  0, -1, -1,  0],
-        [-1, -1,  0,  0,  0,  0,  0,  0,  3,  0],
-        [0,  0,  0, -1,  0, -1, -1,  0, -1,  0],
-        [0, -1,  3,  0,  0,  0,  0,  0,  0,  0],
-        [0, -1, -1, -1,  0, -1,  0,  3,  0,  0],
-        [0,  0,  0,  0,  0,  0, -1, -1, -1,  0],
-        [0,  3,  0,  0,  0,  0,  0,  0,  0,  0]
+        [0,  0,  0,  0,  3,  0,  0,  0,  0,  0],
+        [0,  0, -1, -1,  0,  0,  0, -1,  0,  0],
+        [0,  0,  3,  0,  0, -1,  0, -1,  0,  0],
+        [0, -1,  0,  0,  0, -1,  0,  3,  0,  0],
+        [0,  0,  0, -1,  0,  0,  0,  0, -1,  0],
+        [0, -1,  0,  0,  3,  0, -1,  0,  0,  0],
+        [0,  0,  0, -1,  0,  0,  3,  0, -1,  0],
+        [0,  0, -1,  0,  0,  0,  0, -1,  0,  0],
+        [0,  3,  0,  0, -1,  0,  0,  0, -1,  0],
+        [0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
     ]
 
     return grid
@@ -73,23 +73,25 @@ def get_move_cost(grid, position):
 
     return 1
 
+
 # Warehouse locations
 # Coordinates are represented as (row, column)
+# Coordinates use zero-based indexing.
 
-START = (0, 0)
+START = (0, 1)
 GOAL = (9, 9)
 
 # Three storage zones
 STORAGE_ZONES = {
-    "S1": (2, 2),
-    "S2": (4, 6),
+    "S1": (0, 9),
+    "S2": (5, 9),
     "S3": (9, 9)
 }
 
 # Two charging stations
 CHARGING_STATIONS = {
-    "C1": (0, 9),
-    "C2": (5, 1)
+    "C1": (0, 0),
+    "C2": (9, 0)
 }
 
 
