@@ -2,12 +2,17 @@ from warehouse_grid import create_warehouse_grid, START, GOAL
 from ucs import ucs
 from a_star import a_star
 
+
+# ==================================
+# Test 1: Reachable Goal Test
+# ==================================
+
 grid = [
-["R", ".", ".", ".", "."],
-[".", "X", "X", ".", "."],
-[".", ".", ".", ".", "."],
-[".", "X", "X", "X", "."],
-[".", ".", ".", ".", "G"]
+    [0, 0, 0, 0, 0],
+    [0, -1, -1, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, -1, -1, -1, 0],
+    [0, 0, 0, 0, 0]
 ]
 
 start = (0, 0)
@@ -21,15 +26,26 @@ print("-------------------")
 for key, value in result.items():
     print(f"{key}: {value}")
 
+assert result["found"] is True
+assert result["path"][0] == start
+assert result["path"][-1] == goal
+
+print("PASS: A* found a valid route.")
+
+
+# ==================================
+# Test 2: Weighted Aisle Test
+# ==================================
+
 print("\nWeighted Aisle Test")
 print("-------------------")
 
 weighted_grid = [
-    [".", ".", ".", ".", "."],
-    [".", ".", ".", ".", "."],
-    ["R", "H", "H", "H", "G"],
-    [".", ".", ".", ".", "."],
-    [".", ".", ".", ".", "."]
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 3, 3, 3, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0]
 ]
 
 start = (2, 0)
@@ -40,14 +56,24 @@ result = a_star(weighted_grid, start, goal)
 for key, value in result.items():
     print(f"{key}: {value}")
 
+assert result["found"] is True
+assert result["cost"] == 6
+assert result["steps"] == 6
+
+print("PASS: A* avoided the high-cost cells.")
+
+
+# ==================================
+# Test 3: No Valid Route Test
+# ==================================
 
 print("\nNo Valid Route Test")
 print("-------------------")
 
 blocked_grid = [
-    ["R", ".", "."],
-    ["X", "X", "X"],
-    [".", ".", "G"]
+    [0, 0, 0],
+    [-1, -1, -1],
+    [0, 0, 0]
 ]
 
 start = (0, 0)
@@ -57,6 +83,17 @@ result = a_star(blocked_grid, start, goal)
 
 for key, value in result.items():
     print(f"{key}: {value}")
+
+assert result["found"] is False
+assert result["path"] == []
+assert result["cost"] == 0
+
+print("PASS: A* correctly detected no valid route.")
+
+
+# ==================================
+# Test 4: A* vs UCS Comparison
+# ==================================
 
 print("\nA* vs UCS Comparison")
 print("--------------------")
@@ -79,3 +116,9 @@ print("UCS Expanded Nodes:", ucs_result["expanded_nodes"])
 
 print("A* Execution Time:", astar_result["execution_time"])
 print("UCS Execution Time:", ucs_result["execution_time"])
+
+assert astar_result["found"] is True
+assert ucs_result["found"] is True
+assert astar_result["cost"] == ucs_result["cost"]
+
+print("\nALL A* TESTS PASSED!")
