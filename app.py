@@ -71,7 +71,7 @@ find_route = st.button("🔍 Find Route", type="primary")
 
 
 def display_warehouse(grid, start, goal, locations, path=None):
-    st.subheader("🏭 Warehouse Map")
+    st.subheader("Warehouse Map")
 
     storage_zones = set(locations["storage_zones"].values())
     charging_stations = set(locations["charging_stations"].values())
@@ -196,7 +196,7 @@ else:
 if find_route:
 
     st.divider()
-    st.subheader("📊 Algorithm Performance Comparison")
+    st.subheader("Algorithm Performance Comparison")
 
     # Run all algorithms on the same grid
     algorithms = [bfs, ucs, a_star]

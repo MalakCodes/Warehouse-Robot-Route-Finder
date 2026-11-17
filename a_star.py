@@ -139,7 +139,7 @@ def a_star(grid, start, goal):
                 continue
 
             # Avoid obstacles
-            if grid[new_row][new_col] == -1:
+            if grid[new_row][new_col] not in (0, 3):
                 continue
 
             # Calculate movement cost
